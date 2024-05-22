@@ -10,7 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.android_homework.ui.theme.Android_homeworkTheme
+import java.util.concurrent.TimeUnit
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,6 +27,39 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    val constraints = Constraints.Builder()
+                        .setRequiredNetworkType(androidx.work.NetworkType.NOT_REQUIRED)
+                        .build()
+
+                    val periodicWorkRequest =
+                        PeriodicWorkRequestBuilder<BluetoothStatusWorker>(
+                            repeatInterval = 2,
+                            repeatIntervalTimeUnit = TimeUnit.MINUTES
+                        )
+                            .setInitialDelay(5, TimeUnit.SECONDS)
+                            .build()
+
+                    WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
+                        "loggerPeriodicWorkRequest1",
+                        ExistingPeriodicWorkPolicy.REPLACE,
+                        periodicWorkRequest
+                    )
+
+                    val constraintsAir = Constraints.Builder()
+                        .setRequiredNetworkType(androidx.work.NetworkType.NOT_REQUIRED)
+                        .build()
+
+                    val periodicWorkRequestAir =
+                        PeriodicWorkRequestBuilder<AirplaneModeWorker>(2, TimeUnit.MINUTES)
+                            .setConstraints(constraintsAir)
+                            .build()
+
+                    WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
+                        "loggerPeriodicWorkRequest",
+                        ExistingPeriodicWorkPolicy.REPLACE,
+                        periodicWorkRequestAir
+                    )
+
                     Greeting("Android")
                 }
             }
