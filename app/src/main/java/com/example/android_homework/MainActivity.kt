@@ -133,7 +133,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            MainContent()
+            MainPage()
         }
     }
 
@@ -162,7 +162,7 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun MainContent() {
+fun MainPage() {
     val context = LocalContext.current
     Column(
         modifier = Modifier.padding(16.dp)
